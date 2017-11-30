@@ -56,20 +56,23 @@ void shm(int**& z, int a, int b)
 
 void add(int**& z, int& a, int& b, int argc, char* argv[])
 {
+    int** q;
+    q = new int*[a];
+    for (int i = 0; i < a; i++)
+        q[i] = new int[b];
     int c;
-    cout << "Введите матрицу " << a << "x" << b << endl
-         << endl;
+    cout << "Введите матрицу " << a << "x" << b << endl;
     for (int i = 0; i < a; i++)
         for (int j = 0; j < b; j++) {
             cin >> c;
-            z[i][j] += c;
+            q[i][j] = z[i][j] + c;
         }
     cout << endl
          << "Результат:" << endl
          << endl;
     for (int i = 0; i < a; i++) {
         for (int j = 0; j < b; j++)
-            cout << setw(4) << z[i][j];
+            cout << setw(4) << q[i][j];
         cout << endl;
     }
 }
@@ -88,7 +91,7 @@ void umn(int**& z, int& a, int& b)
         str2 += x[i];
     n = atoi(str1.c_str());
     m = atoi(str2.c_str());
-    cout << "Введите элементы матрицы:" << endl
+    cout << "ВВедите элементы матрицы" << endl
          << endl;
     int** dob;
     dob = new int*[a];
@@ -109,24 +112,15 @@ void umn(int**& z, int& a, int& b)
             for (j = 0; j < m; j++)
                 for (k = 0; k < n; k++)
                     q[i][j] += z[i][k] * dob[k][j];
-        delete[] z;
-        delete[] dob;
-        b = m;
-        int** z;
-        z = new int*[a];
-        for (i = 0; i < a; i++)
-            z[i] = new int[b];
-        for (i = 0; i < a; i++)
-            for (j = 0; j < b; j++)
-                z[i][j] = q[i][j];
-        delete[] q;
-        cout << "Результат" << endl
+        cout << "Результат:" << endl
              << endl;
         for (int i = 0; i < a; i++) {
             for (int j = 0; j < b; j++)
                 cout << setw(4) << z[i][j];
             cout << endl;
         }
+        delete[] dob;
+        delete[] q;
     }
     else
         cout << "Неверный размер";
@@ -206,3 +200,4 @@ int main(int argc, char* argv[])
         }
     }
 }
+
