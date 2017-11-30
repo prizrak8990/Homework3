@@ -4,15 +4,15 @@
 #include <iomanip>
 using namespace std;
 
-int crm(int**& z, int& a, int& b, int argc, char* argv[])
+void crm(int**& z, int& a, int& b, int argc, char* argv[])
 {
     int i, j, k;
     k = 2;
     string x, y;
-    for (i = 0; argv[1][i] != 'x' && argv[1][i] != 'X'; i++)
-        x = x + argv[1][i];
-    for (i + 1; argv[1][i] != '\0'; i++)
-        y = y + argv[1][i];
+    for (i = 0; (argv[1][i] != 'x') && (argv[1][i] != 'X'); i++)
+        x += argv[1][i];
+    for (i += 1; i < strlen(argv[1]); i++)
+        y += argv[1][i];
     a = atoi(x.c_str());
     b = atoi(y.c_str());
     if (a == 0 || b == 0)
@@ -24,8 +24,7 @@ int crm(int**& z, int& a, int& b, int argc, char* argv[])
         for (j = 0; j < b; j++)
             z[i][j] = 0;
     for (i = 0; i < a; i++)
-        for (j = 0; j < b; j++, k++)
-        {
+        for (j = 0; j < b; j++, k++) {
             if (k < argc)
                 z[i][j] = atoi(argv[k]);
         }
@@ -34,7 +33,8 @@ int crm(int**& z, int& a, int& b, int argc, char* argv[])
 void menu()
 {
     cout << endl;
-    cout << "Выберете одну из операций" << endl << endl;
+    cout << "Выберете одну из операций" << endl
+         << endl;
     cout << "1. Вывести матрицу" << endl;
     cout << "2. Сложить матрицу" << endl;
     cout << "3. Умножить матрицу" << endl;
@@ -45,26 +45,113 @@ void menu()
     cout << "8. Завершить работу программы" << endl;
 }
 
-void shm(int** z, int a, int b)
+void shm(int**& z, int a, int b)
 {
-    for (int i = 0; i < a; i++)
-    {
+    for (int i = 0; i < a; i++) {
         for (int j = 0; j < b; j++)
             cout << setw(4) << z[i][j];
         cout << endl;
     }
 }
 
-void add()
+void add(int**& z, int& a, int& b, int argc, char* argv[])
 {
+    int c;
+    cout << "Введите матрицу " << a << "x" << b << endl
+         << endl;
+    for (int i = 0; i < a; i++)
+        for (int j = 0; j < b; j++) {
+            cin >> c;
+            z[i][j] += c;
+        }
+    cout << endl
+         << "Результат:" << endl
+         << endl;
+    for (int i = 0; i < a; i++) {
+        for (int j = 0; j < b; j++)
+            cout << setw(4) << z[i][j];
+        cout << endl;
+    }
 }
 
-void umn()
+void umn(int**& z, int& a, int& b)
 {
+    int i, j, n, m, k, h;
+    char* x;
+    string str1, str2;
+    cout << "Введите размер матрицы:" << endl
+         << endl;
+    cin >> x;
+    for (i = 0; (x[i] != 'x') && (x[i] != 'X'); i++)
+        str1 += x[i];
+    for (i += 1; i < strlen(x); i++)
+        str2 += x[i];
+    n = atoi(str1.c_str());
+    m = atoi(str2.c_str());
+    cout << "ВВедите элементы матрицы" << endl
+         << endl;
+    int** dob;
+    dob = new int*[a];
+    for (i = 0; i < n; i++)
+        dob[i] = new int[m];
+    for (i = 0; i < n; i++)
+        for (j = 0; j < m; j++)
+            cin >> dob[i][j];
+    if (b == n) {
+        int** q;
+        q = new int*[a];
+        for (i = 0; i < a; i++)
+            q[i] = new int[m];
+        for (i = 0; i < a; i++)
+            for (j = 0; j < m; j++)
+                q[i][j] = 0;
+        for (i = 0; i < a; i++)
+            for (j = 0; j < m; j++)
+                for (k = 0; k < n; k++)
+                    q[i][j] += z[i][k] * dob[k][j];
+        delete[] z;
+        delete[] dob;
+        b = m;
+        int** z;
+        z = new int*[a];
+        for (i = 0; i < a; i++)
+            z[i] = new int[b];
+        for (i = 0; i < a; i++)
+            for (j = 0; j < b; j++)
+                z[i][j] = q[i][j];
+        delete[] q;
+        cout << "Результат" << endl
+             << endl;
+        for (int i = 0; i < a; i++) {
+            for (int j = 0; j < b; j++)
+                cout << setw(4) << z[i][j];
+            cout << endl;
+        }
+    }
+    else
+        cout << "Неверный размер";
 }
 
-void trm()
+void trm(int**& z, int& a, int& b)
 {
+    int** q = nullptr;
+    int i, j;
+    q = new int*[b];
+    for (i = 0; i < b; i++)
+        q[i] = new int[a];
+    for (i = 0; i < b; i++)
+        for (j = 0; j < a; j++)
+            q[i][j] = z[j][i];
+    delete[] z;
+    z = new int*[b];
+    for (i = 0; i < b; i++)
+        z[i] = new int[a];
+    for (i = 0; i < b; i++)
+        for (j = 0; j < a; j++)
+            z[i][j] = q[i][j];
+    a = i;
+    b = j;
+    delete[] q;
 }
 
 void savef()
@@ -86,38 +173,36 @@ int main(int argc, char* argv[])
     crm(z, a, b, argc, argv);
     setlocale(LC_ALL, "RUS");
     int choise;
-    while (true)
-    {
+    while (true) {
         menu();
         cin >> choise;
-        switch (choise)
-        {
-            case 1:
-                shm(z, a, b);
-                break;
-            case 2:
-                add();
-                break;
-            case 3:
-                umn;
-                break;
-            case 4:
-                trm();
-                break;
-            case 5:
-                savef();
-                break;
-            case 6:
-                loadf();
-                break;
-            case 7:
-                sort();
-                break;
-            case 8:
-                return 0;
-            default:
-                cout << "Неверная команда" << endl;
+        switch (choise) {
+        case 1:
+            shm(z, a, b);
+            break;
+        case 2:
+            add(z, a, b, argc, argv);
+            break;
+        case 3:
+            umn(z, a, b);
+            break;
+        case 4:
+            trm(z, a, b);
+            break;
+        case 5:
+            savef();
+            break;
+        case 6:
+            loadf();
+            break;
+        case 7:
+            sort();
+            break;
+        case 8:
+            delete[] z;
+            return 0;
+        default:
+            cout << "Неверная команда" << endl;
         }
     }
 }
-
