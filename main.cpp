@@ -88,7 +88,7 @@ void umn(int**& z, int& a, int& b)
         str2 += x[i];
     n = atoi(str1.c_str());
     m = atoi(str2.c_str());
-    cout << "ВВедите элементы матрицы" << endl
+    cout << "Введите элементы матрицы:" << endl
          << endl;
     int** dob;
     dob = new int*[a];
