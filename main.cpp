@@ -91,6 +91,7 @@ void umn(int**& z, int& a, int& b)
         str2 += x[i];
     n = atoi(str1.c_str());
     m = atoi(str2.c_str());
+    if (b == n) {
     cout << "ВВедите элементы матрицы" << endl
          << endl;
     int** dob;
@@ -100,7 +101,6 @@ void umn(int**& z, int& a, int& b)
     for (i = 0; i < n; i++)
         for (j = 0; j < m; j++)
             cin >> dob[i][j];
-    if (b == n) {
         int** q;
         q = new int*[a];
         for (i = 0; i < a; i++)
