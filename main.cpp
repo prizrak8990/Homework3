@@ -2,12 +2,13 @@
 #include <string>
 #include <cstring>
 #include <iomanip>
+#include <fstream>
 using namespace std;
 
-void crm(int**& z, int& a, int& b, int argc, char* argv[])
+void Create_matrix(int**& matrix, int& a, int& b, int argc, char* argv[])
 {
-    int i, j, k;
-    k = 2;
+    int k = 2;
+    int i;
     string x, y;
     for (i = 0; (argv[1][i] != 'x') && (argv[1][i] != 'X'); i++)
         x += argv[1][i];
@@ -17,23 +18,23 @@ void crm(int**& z, int& a, int& b, int argc, char* argv[])
     b = atoi(y.c_str());
     if (a == 0 || b == 0)
         cout << "Неверный размер матрицы, повторите ввод" << endl;
-    z = new int*[a];
+    matrix = new int*[a];
     for (i = 0; i < a; i++)
-        z[i] = new int[b];
+        matrix[i] = new int[b];
     for (i = 0; i < a; i++)
-        for (j = 0; j < b; j++)
-            z[i][j] = 0;
+        for (int j = 0; j < b; j++)
+            matrix[i][j] = 0;
     for (i = 0; i < a; i++)
-        for (j = 0; j < b; j++, k++) {
+        for (int j = 0; j < b; j++, k++) {
             if (k < argc)
-                z[i][j] = atoi(argv[k]);
+                matrix[i][j] = atoi(argv[k]);
         }
 }
 
-void menu()
+void Menu()
 {
     cout << endl;
-    cout << "Выберете одну из операций" << endl
+    cout << "Выберете одну из операций:" << endl
          << endl;
     cout << "1. Вывести матрицу" << endl;
     cout << "2. Сложить матрицу" << endl;
@@ -45,41 +46,37 @@ void menu()
     cout << "8. Завершить работу программы" << endl;
 }
 
-void shm(int**& z, int a, int b)
+void Show_matrix(int** matrix, int a, int b)
 {
     for (int i = 0; i < a; i++) {
         for (int j = 0; j < b; j++)
-            cout << setw(4) << z[i][j];
+            cout << setw(4) << matrix[i][j];
         cout << endl;
     }
 }
 
-void add(int**& z, int& a, int& b, int argc, char* argv[])
+void Add_matrix(int**& matrix, int& a, int& b, int argc, char* argv[])
 {
-    int** q;
-    q = new int*[a];
-    for (int i = 0; i < a; i++)
-        q[i] = new int[b];
-    int c;
+    int count;
     cout << "Введите матрицу " << a << "x" << b << endl;
     for (int i = 0; i < a; i++)
         for (int j = 0; j < b; j++) {
-            cin >> c;
-            q[i][j] = z[i][j] + c;
+            cin >> count;
+            matrix[i][j] = matrix[i][j] + count;
         }
     cout << endl
          << "Результат:" << endl
          << endl;
     for (int i = 0; i < a; i++) {
         for (int j = 0; j < b; j++)
-            cout << setw(4) << q[i][j];
+            cout << setw(4) << matrix[i][j];
         cout << endl;
     }
 }
 
-void umn(int**& z, int& a, int& b)
+void Multiplication_matrix(int**& matrix, int& a, int& b)
 {
-    int i, j, n, m, k, h;
+    int i, n, m;
     char* x;
     string str1, str2;
     cout << "Введите размер матрицы:" << endl
@@ -92,112 +89,132 @@ void umn(int**& z, int& a, int& b)
     n = atoi(str1.c_str());
     m = atoi(str2.c_str());
     if (b == n) {
-    cout << "ВВедите элементы матрицы" << endl
-         << endl;
-    int** dob;
-    dob = new int*[a];
-    for (i = 0; i < n; i++)
-        dob[i] = new int[m];
-    for (i = 0; i < n; i++)
-        for (j = 0; j < m; j++)
-            cin >> dob[i][j];
-        int** q;
-        q = new int*[a];
+        cout << "Введите элементы матрицы" << endl
+             << endl;
+        int** subsidiary_matrix;
+        subsidiary_matrix = new int*[a];
+        for (i = 0; i < n; i++)
+            subsidiary_matrix[i] = new int[m];
+        for (i = 0; i < n; i++)
+            for (int j = 0; j < m; j++)
+                cin >> subsidiary_matrix[i][j];
+        int** final_matrix;
+        final_matrix = new int*[a];
         for (i = 0; i < a; i++)
-            q[i] = new int[m];
+            final_matrix[i] = new int[m];
         for (i = 0; i < a; i++)
-            for (j = 0; j < m; j++)
-                q[i][j] = 0;
+            for (int j = 0; j < m; j++)
+                final_matrix[i][j] = 0;
         for (i = 0; i < a; i++)
-            for (j = 0; j < m; j++)
-                for (k = 0; k < n; k++)
-                    q[i][j] += z[i][k] * dob[k][j];
+            for (int j = 0; j < m; j++)
+                for (int k = 0; k < n; k++)
+                    final_matrix[i][j] += matrix[i][k] * subsidiary_matrix[k][j];
         cout << "Результат:" << endl
              << endl;
-        for (int i = 0; i < a; i++) {
+        b = m;
+        for (int i = 0; i < n; i++)
+            delete[] subsidiary_matrix[i];
+        delete[] subsidiary_matrix;
+        for (int i = 0; i < a; i++)
+            delete[] matrix[i];
+        delete[] matrix;
+        matrix = final_matrix;
+        for (i = 0; i < a; i++) {
             for (int j = 0; j < b; j++)
-                cout << setw(4) << z[i][j];
+                cout << setw(4) << matrix[i][j];
             cout << endl;
         }
-        delete[] dob;
-        delete[] q;
     }
     else
         cout << "Неверный размер";
 }
 
-void trm(int**& z, int& a, int& b)
+void Transpose_matrix(int**& matrix, int& a, int& b)
 {
-    int** q = nullptr;
-    int i, j;
-    q = new int*[b];
-    for (i = 0; i < b; i++)
-        q[i] = new int[a];
-    for (i = 0; i < b; i++)
-        for (j = 0; j < a; j++)
-            q[i][j] = z[j][i];
-    delete[] z;
-    z = new int*[b];
-    for (i = 0; i < b; i++)
-        z[i] = new int[a];
-    for (i = 0; i < b; i++)
-        for (j = 0; j < a; j++)
-            z[i][j] = q[i][j];
-    a = i;
-    b = j;
-    delete[] q;
+    int** subsidiary_matrix = nullptr;
+    subsidiary_matrix = new int*[b];
+    for (int i = 0; i < b; i++)
+        subsidiary_matrix[i] = new int[a];
+    for (int i = 0; i < b; i++)
+        for (int j = 0; j < a; j++)
+            subsidiary_matrix[i][j] = matrix[j][i];
+    for (int i = 0; i < a; i++)
+        delete[] matrix[i];
+    delete[] matrix;
+    matrix = subsidiary_matrix;
+    swap(a, b);
 }
 
-void savef()
+void Save_in_file(int** matrix, int a, int b)
 {
+    ofstream fout("file.txt");
+    fout << setw(4) << a << " " << setw(4) << b << "\r\n";
+    for (int i = 0; i < a; i++) {
+        for (int j = 0; j < b; j++)
+            fout << setw(4) << matrix[i][j];
+        fout << "\r\n";
+    }
+    fout.close();
 }
 
-void loadf()
+void Load_from_file(int**& matrix, int& a, int& b)
 {
+    ifstream fin("file.txt");
+    if (fin.is_open()) {
+        fin >> a >> b;
+        matrix = new int*[a];
+        for (int i = 0; i < a; i++)
+            matrix[i] = new int[b];
+        for (int i = 0; i < a; i++)
+            for (int j = 0; j < b; j++)
+                fin >> matrix[i][j];
+        fin.close();
+    }
+    else
+        cout << "Файл не найден";
 }
 
-void sort()
+void Sorting_matrix()
 {
 }
 
 int main(int argc, char* argv[])
 {
-    int** z = nullptr;
+    int** matrix = nullptr;
     int a, b;
-    crm(z, a, b, argc, argv);
+    Create_matrix(matrix, a, b, argc, argv);
     setlocale(LC_ALL, "RUS");
     int choise;
     while (true) {
-        menu();
+        Menu();
         cin >> choise;
         switch (choise) {
         case 1:
-            shm(z, a, b);
+            Show_matrix(matrix, a, b);
             break;
         case 2:
-            add(z, a, b, argc, argv);
+            Add_matrix(matrix, a, b, argc, argv);
             break;
         case 3:
-            umn(z, a, b);
+            Multiplication_matrix(matrix, a, b);
             break;
         case 4:
-            trm(z, a, b);
+            Transpose_matrix(matrix, a, b);
             break;
         case 5:
-            savef();
+            Save_in_file(matrix, a, b);
             break;
         case 6:
-            loadf();
+            Load_from_file(matrix, a, b);
             break;
         case 7:
-            sort();
+            Sorting_matrix();
             break;
         case 8:
-            delete[] z;
+            delete[] matrix;
             return 0;
         default:
             cout << "Неверная команда" << endl;
         }
     }
 }
-
